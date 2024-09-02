@@ -1,8 +1,8 @@
 // cats.module.ts
 
 import { Module } from '@nestjs/common';
-import { CatsController } from './cats.controller';
-import { CatsService } from './cats.service';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
@@ -16,7 +16,7 @@ import { User } from './entity/user.entity';
         }),
     ],
 
-    controllers: [CatsController],
-    providers: [CatsService],
+    controllers: [UserController],
+    providers: [UserService],
 })
-export class CatsModule { }
+export class UserModule { }

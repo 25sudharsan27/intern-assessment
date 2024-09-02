@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CatsModule } from './cats/cats.module';
+import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './cats/entity/user.entity';
+import { User } from './user/entity/user.entity';
 import * as dotenv from 'dotenv';
 dotenv.config();
 @Module({
@@ -19,7 +19,7 @@ dotenv.config();
       synchronize: true,
       logging: true,
     }),
-    CatsModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
