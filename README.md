@@ -75,9 +75,9 @@ Create a `.env` file in the root directory with the following variables:
 DB_TYPE=postgres
 DB_HOST=localhost
 DB_PORT=5432
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
-DB_NAME=your_database_name
+DB_USERNAME=postgres
+DB_PASSWORD=2005@Sudharsan
+DB_NAME=sudharsan
 
 ```
 Replace the placeholder values with your actual database credentials.
@@ -104,6 +104,9 @@ json
   "place": "string"
 }
 ```
+<br>
+<br>
+
 # Login
 
 - **URL**: /api/login
@@ -118,6 +121,8 @@ json
   "password": "string"
 }
 ```
+<br>
+<br>
 
 # Find All Users
 
@@ -132,6 +137,8 @@ Method: GET
 Path Parameter:
 id - User ID (number)
 ```
+<br>
+<br>
 
 # Update User
 
@@ -149,11 +156,15 @@ json
 }
 ```
 
+
 **Data Requirements**  :
 authentication: A Bearer token for authentication.
 
 - name: New name (optional).
 - place: New place (optional).
+
+<br>
+<br>
 
 # Delete User
 
@@ -176,6 +187,9 @@ json
 - **password**: Password for verification.
 - **confirmation**: Should be "confirm" to proceed with the deletion.
 
+<br>
+<br>
+
 # Requirements
 - **Node.js**: Ensure you have Node.js installed.
 - **PostgreSQL**: Make sure PostgreSQL is set up and running.
@@ -187,6 +201,8 @@ Install dependencies:
 ``` bash
 npm install
 ```
+<br>
+<br>
 
 # Start the application:
 
