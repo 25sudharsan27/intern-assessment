@@ -6,7 +6,8 @@ import { UserService } from './user.service';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
-
+import * as dotenv from 'dotenv';
+dotenv.config();
 @Module({
     imports : [
         TypeOrmModule.forFeature([User])        ,
