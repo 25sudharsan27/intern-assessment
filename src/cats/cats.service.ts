@@ -1,43 +1,120 @@
-// cats.service.ts
-
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException,ExecutionContext } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcryptjs';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/updateuser.dto';
+import { DeleteUserDto } from './dto/deleteuser.dto';
 
 @Injectable()
 export class CatsService {
     private readonly users = [
         // Example data
-        { id: 1, name: 'Sudharsan', email: 'sudharsan@example.com' },
-        { id: 2, name: 'John Doe', email: 'john@example.com' }
+        { id: 1, name: 'Sudharsan', email: 'sudharsan@lpu.in', password: '$2a$10$EIX0siLQ2IR6l4B9vNlqUOl7vN6p9A/mxdT4i.mcdF4/Ot8lS/ZCa', place: "dindigul" },
+        { id: 2, name: 'John Doe', email: 'john@example.com', password: '$2a$10$X.W0p8yEJpT1CfBvERzzUecl6mItC7Jmf5K3Of7XoO9uqZ4vVDn8K', place: "madurai" }
     ];
+
+    constructor(private jwtService: JwtService) {}
+
     findAll(): any[] {
         return this.users;
     }
 
-    findOne(id : number) : any {
-        return this.users.find(user => user.id === id);
+    async findOne(id: number): Promise<any> {
+        const usr = this.users.find(user => user.id === id);
+        return usr;
     }
 
-    create(user: {id : number , name : string, email : string}) {
+
+    async create(createUserDto: CreateUserDto): Promise<{ user: any }> {
+        const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+        const user = {
+             // Example ID generation
+            ...createUserDto,
+            password: hashedPassword,
+        };
         this.users.push(user);
+        return { user };
     }
 
-    deletebyId(id : number) : any{
-        const index = this.users.findIndex(user => user.id === id);
 
-        if(index !==-1){
-            this.users.splice(index,1);
+    async deletebyId(deleteuser : DeleteUserDto): Promise<any> {
+        const auth = deleteuser.authentication;
+        const val = await this.canActivate(auth);
+
+        if(!val){
+            throw new UnauthorizedException("some thing invalid with token");
         }
+
+        const user = this.users.find(user => user.email === deleteuser.email);
+        const userIndex = this.users.findIndex(user => user.email === deleteuser.email);
+        if (!user || !(await bcrypt.compare(deleteuser.password, user.password))) {
+            throw new UnauthorizedException('Invalid credentials');
+        }
+        if(deleteuser.confirmation!== "confirm"){
+            throw new UnauthorizedException("confirmation Not Recieved");
+        }
+        
+        console.log(userIndex);
+        this.users.splice(userIndex, 1);
+        
+        console.log("User deleted his account");
+
     }
 
-    update(id: number, updatedUser: { name: string; email: string }): any {
-        const user = this.users.find(user => user.id === id);
-        if (user) {
+    async update(updatedUser: UpdateUserDto): Promise<any> {
+        const auth = updatedUser?.authentication;
+        
+        // Add a debug log to inspect the `auth` value
+        console.log('Received authentication:', auth);
+    
+        if (!auth) {
+            throw new UnauthorizedException('Token not present');
+        }
+        
+        // Validate the token
+        const val = await this.canActivate(auth);
+        if (!val) {
+            throw new UnauthorizedException("Token is Invalid");
+        }
+        
+        const user = await this.findOne(val.sub);
+        
+        if (!user) {
+            throw new UnauthorizedException("User not found");
+        }
+    
+        if (updatedUser?.name) {
             user.name = updatedUser.name;
-            user.email = updatedUser.email;
-            return user;
         }
-        return null;
+        if (updatedUser?.place) {
+            user.place = updatedUser.place;
+        }
+        return { user };
     }
+    
+    async canActivate(auth: string): Promise<any> {
+        if (!auth) {
+            throw new UnauthorizedException('Authorization header is missing');
+        }
+    
 
+        try {
+            const payload = this.jwtService.verify(auth);
+            return payload; // Return the user payload
+        } catch (error) {
+            throw new UnauthorizedException('Invalid token');
+        }
+    }
+    
 
+    async login(email: string, password: string): Promise<{ access_token: string }> {
+        const user = this.users.find(user => user.email === email);
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            throw new UnauthorizedException('Invalid credentials');
+        }
+        const payload = { email: user.email, sub: user.id };
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
+    }
 }
