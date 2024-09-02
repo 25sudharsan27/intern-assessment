@@ -22,28 +22,27 @@ export class CatsController {
     async findOne(@Param('id') id: string): Promise<any> {
         // Convert id from string to number
         const userId = parseInt(id, 10);
-        const user = this.catsService.findOne(userId);
+        const user = await this.catsService.findOne(userId);
         if (!user) {
             throw new NotFoundException(`User with ID ${userId} not found`);
         }
         return user;
     }
+
     @Post()
     @UsePipes(new ValidationPipe())
-    async create(@Body() createUserDto: CreateUserDto): Promise<{ user: any }> {
+    async create(@Body() createUserDto: CreateUserDto): Promise<any> {
         return this.catsService.create(createUserDto);
     }
 
     @Delete()
-    
-    async delete(@Body() deleteUser : DeleteUserDto): Promise<any> {
-        await this.catsService.deletebyId(deleteUser);
+    async delete(@Body() deleteUser: DeleteUserDto): Promise<any> {
+        return this.catsService.deleteById(deleteUser);
     }
 
     @Put()
     @UsePipes(new ValidationPipe())
     async update(@Body() updatedUser: UpdateUserDto): Promise<any> {
-        
         return this.catsService.update(updatedUser);
     }
 }
