@@ -26,60 +26,171 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Project setup
+# NestJS Project with PostgreSQL and JWT Authentication
 
-```bash
-$ npm install
+## Overview
+
+This project is a NestJS application using PostgreSQL as the database with JWT authentication. It includes endpoints for user operations such as creation, retrieval, updating, and deletion.
+
+## Used Technologies and Tools
+
+- **NestJS:** A progressive Node.js framework for building efficient and scalable server-side applications.
+- **TypeScript:** A superset of JavaScript that adds static types and other features to the language.
+- **PostgreSQL:** An open-source relational database management system.
+- **TypeORM:** An ORM for TypeScript and JavaScript that supports various SQL databases including PostgreSQL.
+- **JWT (JSON Web Tokens):** A compact, URL-safe means of representing claims to be transferred between two parties.
+- **class-validator:** A library for validating objects based on decorators and validation rules.
+- **class-transformer:** A library for transforming and serializing objects based on class definitions.
+- **dotenv:** A module for loading environment variables from a `.env` file into `process.env`.
+
+
+
+## Directory Structure
+
+``` bash
+src/
+├── app.module.ts          # Root module of the application
+├── app.controller.ts      # Root controller of the application
+├── app.service.ts         # Root service of the application
+├── user/
+│   ├── user.module.ts     # Module for user operations
+│   ├── user.controller.ts # Controller for handling API requests
+│   |── user.service.ts    # Service for user operations and JWT | handling
+|   |── dto/
+│   |    ├── create-user.dto.ts # DTO for creating a new user
+│   |    ├── updateuser.dto.ts  # DTO for updating a user
+│   |    └── deleteuser.dto.ts  # DTO for deleting a user
+|   |── entity/
+│         └── user.entity.ts     # TypeORM entity for user
+└── main.ts                # Entry point of the application
+
 ```
 
-## Compile and run the project
+## Environment Variables
 
-```bash
-# development
-$ npm run start
+Create a `.env` file in the root directory with the following variables:
 
-# watch mode
-$ npm run start:dev
 
-# production mode
-$ npm run start:prod
+```env
+DB_TYPE=postgres
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+DB_NAME=your_database_name
+
+```
+Replace the placeholder values with your actual database credentials.
+
+
+API Endpoints User Operations 
+<br>
+<br>
+
+# Create User
+
+- **URL** : /api
+- **Method** : POST
+
+```
+Body
+
+json
+
+{
+  "name": "string",
+  "email": "string",
+  "password": "string",
+  "place": "string"
+}
+```
+# Login
+
+- **URL**: /api/login
+- **Method**: POST
+``` 
+Body
+
+json
+
+{
+  "email": "string",
+  "password": "string"
+}
 ```
 
-## Run tests
+# Find All Users
 
-```bash
-# unit tests
-$ npm run test
+- **URL** : /api
+- **Method**: GET
+- **Find User by ID**
 
-# e2e tests
-$ npm run test:e2e
 
-# test coverage
-$ npm run test:cov
+```
+URL: /api/:id
+Method: GET
+Path Parameter:
+id - User ID (number)
 ```
 
-## Resources
+# Update User
 
-Check out a few resources that may come in handy when working with NestJS:
+- **URL**: /api
+- **Method**: PUT
+```
+Body
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+json
 
-## Support
+{
+  "name": "string",
+  "place": "string",
+  "authentication": "Bearer [token]"
+}
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Data Requirements**  :
+authentication: A Bearer token for authentication.
 
-## Stay in touch
+- name: New name (optional).
+- place: New place (optional).
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Delete User
 
-## License
+- **URL**: /api
+- **Method**: DELETE
+``` 
+Body:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+json
+{
+  "email": "string",
+  "password": "string",
+  "confirmation": "string",
+  "authentication": "Bearer [token]"
+}
+```
+**Data Requirements**:
+- **Authentication**: A Bearer token for authentication.
+- **email**: Email of the user to delete.
+- **password**: Password for verification.
+- **confirmation**: Should be "confirm" to proceed with the deletion.
+
+# Requirements
+- **Node.js**: Ensure you have Node.js installed.
+- **PostgreSQL**: Make sure PostgreSQL is set up and running.
+- **TypeORM**: The project uses TypeORM to interact with the PostgreSQL database.
+- **JWT**: JSON Web Tokens for authentication.
+Running the Application
+Install dependencies:
+
+``` bash
+npm install
+```
+
+# Start the application:
+
+``` bash
+npm run start
+```
+The server will run on http://localhost:3000 by default.
