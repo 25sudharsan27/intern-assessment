@@ -8,6 +8,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class CatsController {
     constructor(private readonly catsService: CatsService) { }
 
+
+    
+
     @Get()
     findAll(): any[] {
         return this.catsService.findAll();
@@ -26,7 +29,7 @@ export class CatsController {
 
     @Delete(':id')
     delete(@Param('id') id: number): void {
-        this.catsService.deleteById(Number(id));
+        this.catsService.deletebyId(Number(id));
     }
 
     @Put(':id')
